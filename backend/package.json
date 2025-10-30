@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node index",
+    "server":"nodemon index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -23,6 +24,8 @@
     "env": "^0.0.2",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.19.2"
+    "mongoose": "^8.19.2",
+    "nodemailer": "^7.0.10",
+    "nodemon": "^3.1.10"
   }
 }
