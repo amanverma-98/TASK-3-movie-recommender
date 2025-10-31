@@ -1,4 +1,4 @@
-from fastapi import FastAPI 
+from fastapi import FastAPI , HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import joblib
 from scipy import sparse
@@ -31,7 +31,7 @@ def recommend(movie_name: str):
     best_match, score = process.extractOne(movie_name, all_titles)
     
     if score < 60:
-        return {"error": f"No close match found for '{movie_name}'"}
+        raise HTTPException(status_code=404, detail=f"No close match found for '{movie_name}'")
     
     index = movies[movies['title'].str.lower() == best_match].index[0]
     distances = list(enumerate(similarity[index].toarray().flatten()))
