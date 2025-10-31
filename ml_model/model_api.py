@@ -3,8 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 import joblib
 from scipy import sparse
 from fuzzywuzzy import process
+import os
 
 app = FastAPI(title="Movie Recommender API", version="2.0")
+BASE_DIR = os.path.dirname(__file__)
 
 # hm yha pr CORSmiddleware ka use kr rhe coz front-end or any other client se request aayegi to wo allow ho jaye
 origins = ["*"]  
@@ -16,8 +18,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-movies = joblib.load("C:\\Users\\av979\\OneDrive\\Desktop\\Movie-recommender\\TASK-3-movie-recommender\\TASK-3-movie-recommender\\ml_model\\movies_df.joblib")
-similarity = sparse.load_npz("C:\\Users\\av979\\OneDrive\\Desktop\\Movie-recommender\\TASK-3-movie-recommender\\TASK-3-movie-recommender\\ml_model\\cos_sim_sparse.npz")
+movies = joblib.load(os.path.join(BASE_DIR, "movies_df.joblib"))
+similarity = sparse.load_npz(os.path.join(BASE_DIR, "cos_sim_sparse.npz"))
+
 
 @app.get("/")
 def home():
@@ -35,7 +38,7 @@ def search_movies(query: str):
     except Exception as e:
         return {"error": f"Search failed: {str(e)}"}
     
-    
+
 @app.get("/recommend/{movie_name}")
 def recommend(movie_name: str):
     movie_name = movie_name.strip().lower()
