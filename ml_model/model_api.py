@@ -23,7 +23,19 @@ similarity = sparse.load_npz("C:\\Users\\av979\\OneDrive\\Desktop\\Movie-recomme
 def home():
     return {"message": "Movie Recommender API running!"}
 
-
+@app.get("/search/{query}")
+def search_movies(query: str):
+    all_titles = movies['title'].fillna("").astype(str).str.lower().tolist()
+    try:
+        results = process.extract(query.lower(), all_titles, limit=10)
+        matches = [{"title": movies.iloc[i]['title'], "score": score} 
+                   for (match, score) in results 
+                   for i in movies[movies['title'].str.lower() == match].index]
+        return {"results": matches}
+    except Exception as e:
+        return {"error": f"Search failed: {str(e)}"}
+    
+    
 @app.get("/recommend/{movie_name}")
 def recommend(movie_name: str):
     movie_name = movie_name.strip().lower()
