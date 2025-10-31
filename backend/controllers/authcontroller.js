@@ -2,11 +2,26 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import userModel from "../models/user.model.js"
 import transporter from "../config/nodemailer.js";
+import validator from "validator";
 
 export const register = async (req,res) => {
     const {full_name,email,password} = req.body;
     if (!full_name||!email||!password){
         return res.json({success:false,message: "missing details"}) }
+    if (!validator.isEmail(email)){
+        return res.status(400).json({ success: false, message: "Please provide a valid email address." });
+    }
+    if (password.length < 8 || password.length >50) {
+        return res.status(400).json({ success: false, message: "Password does not meet the strength requirements." });
+    }
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+    const complexityScore = hasUpperCase + hasLowerCase + hasNumber + hasSymbol;
+    if (complexityScore < 3) {
+        return res.status(400).json({ success: false, message: "Password does not meet the strength requirements." });
+    }
     try{
         const ExistingUser = await userModel.findOne({email});
         if(ExistingUser){
