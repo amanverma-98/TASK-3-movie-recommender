@@ -1,6 +1,45 @@
-body, html, #root, .App {
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
   height: 100%;
   width: 100%;
+  background-color: #0e0e0e;
+  color: white;
+  font-family: "Poppins", sans-serif;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+button,
+div,
+span,
+li {
+  caret-color: transparent;
+}
+
+input,
+textarea {
+  caret-color: #4facfe;
+}
+
+button:focus,
+div:focus,
+li:focus,
+span:focus {
+  outline: none;
+  box-shadow: none;
 }

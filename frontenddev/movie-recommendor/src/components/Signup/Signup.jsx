@@ -2,99 +2,69 @@ import React, { useState } from "react";
 import "./Signup.css";
 
 const Signup = ({ onClose }) => {
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
-  const [error, setError] = useState(""); // ⚠️ for inline validation message
-
-  // Handle input changes
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-
-    // Clear error when typing
-    setError("");
-  };
-
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Check password match
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+    if (form.password !== form.confirmPassword) {
+      alert("Passwords do not match");
       return;
     }
-
-    // If matched, proceed (you’ll later integrate backend API here)
-    console.log("Signup successful:", formData);
-    setError(""); // clear error on success
+    console.log("Signup:", form);
+    onClose();
   };
 
   return (
     <div className="modal-overlay">
-      <div className="modal-box">
+      <div className="modal">
         <button className="close-btn" onClick={onClose}>
           ✕
         </button>
-
-        <h1 className="modal-title">Create Account</h1>
-        <p className="modal-subtitle">
-          Join <span>ROOVIE</span> and discover your next favorite movie
-        </p>
+        <h2 className="modal-title">Create Account</h2>
+        <p className="modal-subtitle">Join Roovie and explore amazing movies</p>
 
         <form onSubmit={handleSubmit}>
           <label>Full Name</label>
           <input
             type="text"
-            name="name"
             placeholder="Enter your name"
-            value={formData.name}
-            onChange={handleChange}
-            required
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
 
           <label>Email Address</label>
           <input
             type="email"
-            name="email"
             placeholder="Enter your email"
-            value={formData.email}
-            onChange={handleChange}
-            required
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
 
           <label>Password</label>
           <input
             type="password"
-            name="password"
             placeholder="Enter your password"
-            value={formData.password}
-            onChange={handleChange}
-            required
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
           />
 
           <label>Confirm Password</label>
           <input
             type="password"
-            name="confirmPassword"
             placeholder="Confirm your password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            required
+            value={form.confirmPassword}
+            onChange={(e) =>
+              setForm({ ...form, confirmPassword: e.target.value })
+            }
           />
 
-          {/* ⚠️ Inline error message */}
-          {error && <p className="error-text">{error}</p>}
-
-          <button type="submit" className="modal-btn">
-            Create Account
+          <button type="submit" className="submit-btn">
+            Send OTP
           </button>
         </form>
       </div>

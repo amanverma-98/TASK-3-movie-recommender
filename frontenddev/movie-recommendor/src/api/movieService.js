@@ -1,31 +1,15 @@
-//later we'll include the api here given by backend and ml
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
-const ACCESS_TOKEN = import.meta.env.VITE_TMDB_READ_ACCESS_TOKEN;
-
-const tmdb = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    Authorization: `Bearer ${ACCESS_TOKEN}`,
-    accept: "application/json",
-  },
-});
+const BASE_URL = "https://api.themoviedb.org/3";
+const API_KEY = "15f79feff623872b47ed694568a526e7";
 
 export const fetchTopRatedMovie = async () => {
   try {
-    const res = await tmdb.get("/movie/top_rated");
-    const movie = res.data.results[0]; 
-    return {
-      title: movie.title,
-      rating: movie.vote_average,
-      overview: movie.overview,
-      year: movie.release_date?.slice(0, 4),
-      genre: "Sci-Fi • Action",
-      backdrop: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`,
-    };
-  } catch (err) {
-    console.error("Error fetching top-rated movie:", err);
+    const res = await axios.get(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}`);
+    // Return one top movie
+    return res.data.results[0];
+  } catch (error) {
+    console.error("Error fetching movie:", error);
     return null;
   }
 };

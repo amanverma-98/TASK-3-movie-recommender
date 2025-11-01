@@ -1,44 +1,56 @@
-/* NAVBAR CONTAINER */
+/* ===== NAVBAR CONTAINER ===== */
 .navbar {
   width: 100%;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px 10px;
-  background: rgba(10, 10, 10, 0.8);
+  padding: 0 60px;
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   position: fixed;
   top: 0;
   left: 0;
   z-index: 10;
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* LOGO */
+/* ===== LOGO ===== */
 .logo {
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 700;
   letter-spacing: 1.2px;
+  cursor: pointer;
 }
 
 .gradient-text {
   background: linear-gradient(90deg, #4facfe, #9b4dff);
-  background-clip: text;
+    background-clip: text;
+
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-
   font-weight: 800;
+  text-transform: uppercase;
 }
 
+/* ===== NAV CENTER ===== */
+.nav-center {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  flex: 1;
+  justify-content: center;
+}
 
+/* ===== NAV LINKS ===== */
 .nav-links {
   display: flex;
   align-items: center;
   list-style: none;
-  gap: 65px;
+  gap: 90px;
   color: white;
   font-weight: 500;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
 }
 
 .nav-links li {
@@ -50,62 +62,61 @@
   color: #4facfe;
 }
 
+/* ===== SEARCH BOX ===== */
 .search-box {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   background: #1a1a1a;
-  border-radius: 40px;
-  padding: 6px 14px;
+  border-radius: 25px;
+  padding: 6px 12px;
   width: 350px;
-  height: 30px;
-  margin: 0 20px;
-  border: 1px solid rgba(79, 172, 254, 0.4);
+  height: 50px;
+  margin-left: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   transition: all 0.3s ease;
- 
 }
 
 .search-box input {
-    background: transparent; 
+  background: transparent;
   border: none;
   outline: none;
   color: white;
-  padding-left: 8px;
   width: 100%;
+  padding: 6px;
   font-size: 0.95rem;
-  z-index: 2;
-  
+}
+
+.search-box:focus-within {
+  border-color: #4facfe;
+  box-shadow: 0 0 10px rgba(79, 172, 254, 0.6);
 }
 
 .search-btn {
   background: none;
   border: none;
   color: #4facfe;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   cursor: pointer;
   transition: transform 0.2s;
 }
 
- .search-box:focus-within {
-  border: 1px solid #4facfe;
-  box-shadow:
-    0 0 8px rgba(79, 172, 254, 0.6)
-   ;
-  background: rgba(15, 15, 15, 0.85);
-  transition: all 0.3s ease;
-}
-
 .search-btn:hover {
-  transform: scale(1.2);
-
+  transform: scale(1.15);
+}
+button:focus,
+input:focus,
+.search-btn:focus,
+.login-btn:focus,
+.signup-btn:focus {
+  outline: none; 
+  box-shadow: none; 
 }
 
-
+/* ===== AUTH BUTTONS ===== */
 .nav-buttons {
   display: flex;
   align-items: center;
-  gap: 20px;
-
+  gap: 25px;
 }
 
 /* LOGIN BUTTON */
@@ -135,9 +146,8 @@
   cursor: pointer;
   font-weight: 600;
   font-size: 0.95rem;
-  box-shadow: 0 0 12px rgba(79, 172, 254, 0.6);
+  box-shadow: 0 0 12px rgba(79, 172, 254, 0.5);
   transition: transform 0.25s, box-shadow 0.3s;
-  margin-right: 25px;
 }
 
 .signup-btn:hover {
@@ -145,30 +155,36 @@
   box-shadow: 0 0 18px rgba(79, 172, 254, 0.9);
 }
 
-/* RESPONSIVE DESIGN */
+/* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 1024px) {
-  .nav-links {
+  .navbar {
+    padding: 0 25px;
+  }
+
+  .nav-center {
     gap: 25px;
   }
 
   .search-box {
-    width: 200px;
-  }
-
-  .nav-buttons {
-    margin-right: -20px;
+    width: 220px;
   }
 }
 
 @media (max-width: 768px) {
   .navbar {
     flex-wrap: wrap;
-    padding: 15px 20px;
+    height: auto;
+    padding: 15px 25px;
+    gap: 15px;
+  }
+
+  .nav-center {
+    flex-direction: column;
+    gap: 10px;
   }
 
   .nav-links {
-    flex-wrap: wrap;
-    gap: 15px;
+    gap: 20px;
   }
 
   .search-box {
@@ -176,6 +192,6 @@
   }
 
   .nav-buttons {
-    margin: 10px 0 0;
+    margin-top: 10px;
   }
 }

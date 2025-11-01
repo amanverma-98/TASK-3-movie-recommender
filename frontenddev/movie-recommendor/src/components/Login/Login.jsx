@@ -2,51 +2,42 @@ import React, { useState } from "react";
 import "./Login.css";
 
 const Login = ({ onClose }) => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
-
-  const handleChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-   // console.log("Login submitted:", formData);
+    console.log("Login:", email, password);
+    onClose();
   };
 
   return (
     <div className="modal-overlay">
-      <div className="modal-box">
+      <div className="modal">
         <button className="close-btn" onClick={onClose}>
           ✕
         </button>
-        <h1 className="modal-title">Welcome Back</h1>
-        <p className="modal-subtitle">
-          Sign in to continue your cinematic journey
-        </p>
+        <h2 className="modal-title">Welcome Back</h2>
+        <p className="modal-subtitle">Sign in to continue your cinematic journey</p>
 
         <form onSubmit={handleSubmit}>
           <label>Email Address</label>
           <input
             type="email"
-            name="email"
             placeholder="Enter your email"
-            onChange={handleChange}
-            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
 
           <label>Password</label>
           <input
             type="password"
-            name="password"
             placeholder="Enter your password"
-            onChange={handleChange}
-            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
 
-          <div className="forgot">
-            <a href="#">Forgot password?</a>
-          </div>
-
-          <button type="submit" className="modal-btn">
+          <button type="submit" className="submit-btn">
             Sign In
           </button>
         </form>
