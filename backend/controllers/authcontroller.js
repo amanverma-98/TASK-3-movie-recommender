@@ -139,8 +139,9 @@ export const verifyOTP = async (req,res) => {
 }
 
 export const verifyEmail = async (req,res) => {
-    const {userID,otp} = req.body;
-    if(!userID||!otp){
+    const userID = req.userId;
+    const {otp} = req.body;
+    if(!otp){
         return res.json({success:false, message:"Missing Details"})
     }
     try{
