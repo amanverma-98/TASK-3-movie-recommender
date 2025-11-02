@@ -59,6 +59,7 @@ export const register = async (req,res) => {
             },
         });
     }catch(error){
+        console.error("ERROR DURING REGISTRATION:", error);
         return res.json({success:false, message: error.message})
     }
 }
