@@ -7,7 +7,7 @@ import os
 import pandas as pd
 import re
 
-app = FastAPI(title="Movie Recommender API", version="6.0")  # updated version
+app = FastAPI(title="Movie Recommender API", version="6.1")  # updated version
 
 BASE_DIR = os.path.dirname(__file__)
 
@@ -56,6 +56,12 @@ def assign_content_rating(row):
 # content rating ka column details me add kr rhe h
 details["content_rating"] = details.apply(assign_content_rating, axis=1)
 
+# helper function to keep only top 3 actors
+def keep_top_3_actors(x):
+    actors = str(x).split(",")  # split by comma
+    top_3 = actors[:3]          # take only first 3
+    return ", ".join([a.strip() for a in top_3])  # join back as string
+
 @app.get("/")
 def home():
     return {"message": "🎬 Movie Recommender API with Filters, Smart Ratings & Popularity Sorting is Running!"}
@@ -72,17 +78,17 @@ def search_movies(
     filter_priority: str | None = Query(None, description="Choose: genre, actor, tag, rating")
 ):
     query = query.strip().lower()
-    all_titles = movies["title"].fillna("").astype(str).str.lower().tolist()  #lowercase kr rhe h titles ko , list me convert kr rhe h
+    all_titles = movies["title"].fillna("").astype(str).str.lower().tolist()
 
     try:
-        results = process.extract(query, all_titles, limit=10)    #fuzzy matching kr rhe h
+        results = process.extract(query, all_titles, limit=10)
         matched_indices = [
             i
             for (match, score) in results
-            for i in movies[movies["title"].str.lower() == match].index    # index nikal rhe h matched titles ka
+            for i in movies[movies["title"].str.lower() == match].index
         ]
-        matched_df = movies.iloc[matched_indices][["title"]] #matched titles ka dataframe bna rhe h
-        enriched = pd.merge(     #matched titles ko details se merge kr rhe h
+        matched_df = movies.iloc[matched_indices][["title"]]
+        enriched = pd.merge(
             matched_df,
             details[["title", "genres", "overview", "top_3_actors", "keywords", "director", "content_rating", "popularity"]],
             on="title",
@@ -90,7 +96,7 @@ def search_movies(
         )
 
         enriched["match_score"] = [
-            score for (match, score) in results for i in movies[movies["title"].str.lower() == match].index  #match score add kr rhe h
+            score for (match, score) in results for i in movies[movies["title"].str.lower() == match].index
         ]
 
         # priority k hisab se filters apply kr rhe h
@@ -103,47 +109,50 @@ def search_movies(
 
         for key, val in filters.items():
             if key == "genre":
-                enriched = enriched[enriched["genres"].str.contains(val, case=False, na=False)] # yha pr hm case insensitive search kr rhe h mtlb chhote ya bade letters se fark nhi pdta
+                enriched = enriched[enriched["genres"].str.contains(val, case=False, na=False)]
             elif key == "actor":
-                enriched = enriched[enriched["top_3_actors"].str.contains(val, case=False, na=False)] 
+                enriched = enriched[enriched["top_3_actors"].str.contains(val, case=False, na=False)]
             elif key == "tag":
                 enriched = enriched[enriched["keywords"].str.contains(val, case=False, na=False)]
             elif key == "rating":
                 enriched = enriched[enriched["content_rating"].str.contains(val, case=False, na=False)]
 
-        enriched = enriched.drop_duplicates(subset=["title"]) 
+        enriched = enriched.drop_duplicates(subset=["title"])
+
+        # limit top 3 actors
+        enriched["top_3_actors"] = enriched["top_3_actors"].apply(keep_top_3_actors)
 
         #Sort by popularity descending
         enriched = enriched.sort_values(by="popularity", ascending=False)
 
-        return {"results": enriched.to_dict(orient="records")}   # dict format me results return kr rhe h jisko json me convert kr skte h
+        return {"results": enriched.to_dict(orient="records")}
 
     except Exception as e:
-        return {"error": f"Search failed: {str(e)}"}  #error handling kr rhe h
+        return {"error": f"Search failed: {str(e)}"}
 
 
-# Recommend Endpoint 
+# Recommend Endpoint
 @app.get("/recommend/{movie_name}")
 def recommend(
-    movie_name: str,  #mandatory parameter
-    genre: str | None = Query(None),#optional parameters
+    movie_name: str,
+    genre: str | None = Query(None),
     actor: str | None = Query(None),
     tag: str | None = Query(None),
     content_rating: str | None = Query(None),
     filter_priority: str | None = Query(None)
 ):
     movie_name = movie_name.strip().lower()
-    all_titles = movies["title"].str.lower().tolist()  #lowercase kr rhe h titles ko , list me convert kr rhe h
-    best_match, score = process.extractOne(movie_name, all_titles) #fuzzy matching kr rhe h
+    all_titles = movies["title"].str.lower().tolist()
+    best_match, score = process.extractOne(movie_name, all_titles)
 
     if score < 60:
-        raise HTTPException(status_code=404, detail=f"No close match found for '{movie_name}'") #error handling kr rhe h
+        raise HTTPException(status_code=404, detail=f"No close match found for '{movie_name}'")
 
     index = movies[movies["title"].str.lower() == best_match].index[0]
-    distances = list(enumerate(similarity[index].toarray().flatten()))   #similarity matrix me se distances nikal rhe h , flatten kr rhe h 2D array ko 1D me jise age hm use kr ske
+    distances = list(enumerate(similarity[index].toarray().flatten()))
     movies_list = sorted(distances, reverse=True, key=lambda x: x[1])[1:6]
 
-    recommendations_df = movies.iloc[[i[0] for i in movies_list]][["title"]] 
+    recommendations_df = movies.iloc[[i[0] for i in movies_list]][["title"]]
     enriched = pd.merge(
         recommendations_df,
         details[["title", "genres", "overview", "top_3_actors", "keywords", "director", "content_rating", "popularity"]],
@@ -151,7 +160,6 @@ def recommend(
         how="left",
     )
 
-    # same search endpoint jese hi filters apply kr rhe h
     filters = {"genre": genre, "actor": actor, "tag": tag, "rating": content_rating}
     filters = {k: v for k, v in filters.items() if v}
 
@@ -166,14 +174,16 @@ def recommend(
         elif key == "tag":
             enriched = enriched[enriched["keywords"].str.contains(val, case=False, na=False)]
         elif key == "rating":
-            enriched = enriched[enriched["content_rating"].str.contains(val, case=False, na=False)]
+            enriched = enriched["content_rating"].str.contains(val, case=False, na=False)
 
-    enriched = enriched.drop_duplicates(subset=["title"])  #duplicate titles remove kr rhe h
+    enriched = enriched.drop_duplicates(subset=["title"])
+
+    # limit top 3 actors
+    enriched["top_3_actors"] = enriched["top_3_actors"].apply(keep_top_3_actors)
 
     #Sort recommendations by popularity descending
     enriched = enriched.sort_values(by="popularity", ascending=False)
 
-# final response bna rhe h
     return {
         "searched_movie": movies.loc[index, "title"],
         "match_score": score,
