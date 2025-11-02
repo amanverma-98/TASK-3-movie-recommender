@@ -132,20 +132,37 @@ with tab1:
                         st.divider()
 
 
-# ---------------- RECOMMEND TAB (unchanged) ----------------
+# ---------------- RECOMMEND TAB (Single Search Box with Dropdown) ----------------
 with tab2:
     st.subheader("🎞️ Recommend Similar Movies")
-    rec_query = st.text_input("Enter or select a movie for recommendations:")
-    rec_suggestions = get_movie_suggestions(rec_query) if rec_query else []
-    selected_rec = st.selectbox("Select from suggestions:", rec_suggestions) if rec_suggestions else None
+
+    # Single combined search+dropdown input
+    all_movies_rec = get_movie_suggestions("a")  # preload few for dropdown start (optional)
+    rec_query = st.selectbox(
+        "🎬 Type or select a movie:",
+        options=all_movies_rec,
+        index=None,
+        placeholder="Start typing a movie name...",
+        key="rec_initial_dropdown"
+    )
+
+    # When user types something new, fetch fresh suggestions dynamically
+    if rec_query and rec_query not in all_movies_rec:
+        rec_suggestions = get_movie_suggestions(rec_query)
+        if rec_suggestions:
+            rec_query = st.selectbox(
+                "Suggestions:",
+                options=rec_suggestions,
+                index=0,
+                key="rec_dynamic_suggestions",
+            )
 
     if st.button("Get Recommendations"):
-        final_query = selected_rec or rec_query
-        if not final_query:
-            st.warning("Please enter or select a movie.")
+        if not rec_query:
+            st.warning("Please select or type a movie name.")
         else:
             endpoint = build_url(
-                f"/recommend/{final_query}",
+                f"/recommend/{rec_query}",
                 genre=genre,
                 actor=actor,
                 tag=tag,
@@ -157,14 +174,19 @@ with tab2:
             if data and "recommendations" in data:
                 recs = data["recommendations"]
                 st.subheader(f"🎬 Recommendations for **{data['searched_movie']}**")
+
                 if not recs:
                     st.info("No recommendations found.")
                 else:
+                    st.success(f"Found {len(recs)} similar movies 🎯")
                     for movie in recs:
                         col1, col2 = st.columns([1, 3])
                         with col1:
                             poster = get_poster(movie["title"])
-                            st.image(poster or "https://via.placeholder.com/200x300?text=No+Image", width=200)
+                            st.image(
+                                poster or "https://via.placeholder.com/200x300?text=No+Image",
+                                width=200
+                            )
                         with col2:
                             st.subheader(movie["title"])
                             st.write(f"🎭 **Genre:** {movie.get('genres', 'N/A')}")
