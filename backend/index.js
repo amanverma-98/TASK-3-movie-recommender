@@ -5,6 +5,7 @@ import cors from "cors";
 
 import authRouter from "./routes/authRoutes.js"
 import connectDB from "./config/mongodb.js";
+import userRouter from "./routes/userRoutes.js";
 
 const app = express();
 const port = process.env.PORT||8000;
@@ -12,8 +13,9 @@ connectDB();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({credentials:true}))
+app.use(cors({credentials:true}));
 
-app.use("/api",authRouter)
+app.use("/api",authRouter);
+app.use("/api/user",userRouter);
 
-app.listen(port, () => console.log("server started"))
+app.listen(port, () => console.log("server started"));
