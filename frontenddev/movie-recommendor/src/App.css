@@ -43,3 +43,28 @@ span:focus {
   outline: none;
   box-shadow: none;
 }
+
+.search-heading {
+  color: #fff;
+  text-align: center;
+  margin: 40px 0 10px;
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.search-heading span {
+
+  color: rgb(23, 234, 227);
+  font-weight: 700;
+}
+
+.loading {
+  text-align: center;
+  color: #aaa;
+  margin-top: 40px;
+  font-style: italic;
+}
+
+.main-content {
+  padding-top: 80px; 
+}
