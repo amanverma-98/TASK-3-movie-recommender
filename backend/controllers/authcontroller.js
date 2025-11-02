@@ -31,14 +31,7 @@ export const register = async (req,res) => {
         const user = new userModel({full_name,email,password:hashedPassword});
         await user.save();
         const token = jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:"7d"});
-        res.cookie("token",token,{
-            httpOnly:true,
-            secure:process.env.NODE_ENV === "production",
-            sameSite:process.env.NODE_ENV === "production"?
-            "none": "strict",
-            maxAge:7*24*60*60*1000
-        });
-        //Sending email
+
         const mailOptions = {
             from : process.env.SENDER_EMAIL,
             to : email,
@@ -46,6 +39,14 @@ export const register = async (req,res) => {
             text:`Welcome ${full_name}, your account has been created with E-Mail ID ${email}`
         }
         await transporter.sendMail(mailOptions);
+
+        res.cookie("token",token,{
+            httpOnly:true,
+            secure:process.env.NODE_ENV === "production",
+            sameSite:process.env.NODE_ENV === "production"?
+            "none": "strict",
+            maxAge:7*24*60*60*1000
+        });
         
 
         return res.status(201).json({
@@ -66,6 +67,9 @@ export const login = async (req,res) => {
     const {email,password} = req.body;
     if (!email||!password){
         return res.json({success:false,message: "Both E-mail and password are required"})
+    }
+    if(!userModel.isVerified){
+        return res.json({success:false, message:"User not verified"})
     }
     try{
         const user = await userModel.findOne({email});
