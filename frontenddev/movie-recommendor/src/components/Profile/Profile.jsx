@@ -10,7 +10,7 @@ const Profile = ({ onClose }) => {
     if (storedUser) {
       setUser(storedUser);
     } else {
-      // Temporary dummy user data
+      
       setUser({
         name: "Guest User",
         email: "guest@roovie.com",

@@ -53,7 +53,7 @@ const App = () => {
           {heroMovie && <Hero movie={heroMovie} />}
 
           <Routes>
-            {/* ✅ Pass recommendedMovies & loading to Home */}
+           
             <Route
               path="/"
               element={

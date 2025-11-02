@@ -14,7 +14,6 @@
   border: none;
 }
 
-/* dark overlay over the image */
 .hero-section::before {
   content: "";
   position: absolute;
@@ -83,7 +82,6 @@
   }
 }
 
-/* Fade-out to dark background to blend with next section */
 .hero-section::after {
   content: "";
   position: absolute;
@@ -95,7 +93,6 @@
   z-index: 1;
 }
 
-/* Responsive styles */
 @media (max-width: 768px) {
   .hero-overlay {
     padding: 2rem;

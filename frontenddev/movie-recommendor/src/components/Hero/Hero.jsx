@@ -15,10 +15,7 @@ const Hero = ({ movie }) => {
 
   if (!movie) {
     return (<></>
-      // <div className="hero-placeholder">
-      //   <h1>Discover Top Rated Movies</h1>
-      //   <p>Explore the best films recommended just for you 🎬</p>
-      // </div>
+   
     );
   }
 

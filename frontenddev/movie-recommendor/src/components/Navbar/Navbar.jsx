@@ -8,8 +8,8 @@ const Navbar = ({ onLoginClick, onSignupClick, onProfileClick, onSearch }) => {
 
   const handleSearch = () => {
     if (query.trim()) {
-      onSearch(query); // pass query up to App.jsx
-      navigate("/recommended"); // move to recommended page
+      onSearch(query); 
+      navigate("/recommended");
       setQuery("");
     }
   };
