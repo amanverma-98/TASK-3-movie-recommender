@@ -15,6 +15,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({credentials:true}));
 
+app.get("/", (req, res) => {
+    res.status(200).json({ 
+        success: true, 
+        message: "API is running successfully. Welcome!" 
+    });
+});
 app.use("/api",authRouter);
 app.use("/api/user",userRouter);
 
