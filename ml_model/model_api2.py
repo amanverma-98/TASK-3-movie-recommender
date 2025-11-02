@@ -174,7 +174,8 @@ def recommend(
         elif key == "tag":
             enriched = enriched[enriched["keywords"].str.contains(val, case=False, na=False)]
         elif key == "rating":
-            enriched = enriched["content_rating"].str.contains(val, case=False, na=False)
+            enriched = enriched[enriched["content_rating"].str.contains(val, case=False, na=False)]  
+
 
     enriched = enriched.drop_duplicates(subset=["title"])
 

@@ -73,43 +73,40 @@ def build_url(base, **params):
     return f"{base}?{query_str}" if query_str else base
 
 
-# ---------------- SEARCH TAB (Single Search Box with Dropdown) ----------------
+# ---------------- SEARCH TAB (Dynamic Search Input) ----------------
 with tab1:
     st.subheader("🔍 Search Movies")
 
-    # Single combined search+dropdown input
-    all_movies = get_movie_suggestions("a")  # preload few for dropdown start (can be blank if you prefer)
-    user_query = st.selectbox(
-        "🎬 Type or select a movie:",
-        options=all_movies,
-        index=None,
-        placeholder="Start typing a movie name...",
-    )
+    # Text input (user types here)
+    user_query = st.text_input("🎬 Type a movie name:", placeholder="Start typing...")
 
-    # When user types something new, fetch fresh suggestions dynamically
-    if user_query and user_query not in all_movies:
-        suggestions = get_movie_suggestions(user_query)
-        if suggestions:
-            user_query = st.selectbox(
-                "Suggestions:",
-                options=suggestions,
-                index=0,
-                key="dynamic_suggestions",
-            )
+    # Fetch suggestions dynamically from API as user types
+    suggestions = get_movie_suggestions(user_query) if user_query else []
+
+    # Show a dropdown of matching movies
+    selected_movie = None
+    if suggestions:
+        selected_movie = st.selectbox(
+            "Select from suggestions:",
+            suggestions,
+            key="movie_dropdown"
+        )
+
+    # If a movie is selected, use it; otherwise fall back to the typed query
+    final_movie = selected_movie or user_query
 
     if st.button("Search"):
-        if not user_query:
-            st.warning("Please select or type a movie name.")
+        if not final_movie:
+            st.warning("Please enter or select a movie.")
         else:
             endpoint = build_url(
-                f"/search/{user_query}",
+                f"/search/{final_movie}",
                 genre=genre,
                 actor=actor,
                 tag=tag,
                 content_rating=rating,
                 filter_priority=priority,
             )
-
             data = call_api(endpoint)
             if data and "results" in data:
                 results = data["results"]
@@ -121,7 +118,10 @@ with tab1:
                         col1, col2 = st.columns([1, 3])
                         with col1:
                             poster = get_poster(movie["title"])
-                            st.image(poster or "https://via.placeholder.com/200x300?text=No+Image", width=200)
+                            st.image(
+                                poster or "https://via.placeholder.com/200x300?text=No+Image",
+                                width=200,
+                            )
                         with col2:
                             st.subheader(movie["title"])
                             st.write(f"🎭 **Genre:** {movie.get('genres', 'N/A')}")
@@ -132,41 +132,36 @@ with tab1:
                         st.divider()
 
 
-# ---------------- RECOMMEND TAB (Single Search Box with Dropdown) ----------------
+# ---------------- RECOMMEND TAB (Dynamic Search Input) ----------------
 with tab2:
     st.subheader("🎞️ Recommend Similar Movies")
 
-    # Single combined search+dropdown input
-    all_movies_rec = get_movie_suggestions("a")  # preload few for dropdown start (optional)
-    rec_query = st.selectbox(
-        "🎬 Type or select a movie:",
-        options=all_movies_rec,
-        index=None,
-        placeholder="Start typing a movie name...",
-        key="rec_initial_dropdown"
-    )
+    # Text input (user types movie name or keyword)
+    rec_query = st.text_input("🎬 Type a movie name or keyword:", placeholder="Start typing...", key="rec_input")
 
-    # When user types something new, fetch fresh suggestions dynamically
-    if rec_query and rec_query not in all_movies_rec:
-        rec_suggestions = get_movie_suggestions(rec_query)
-        if rec_suggestions:
-            rec_query = st.selectbox(
-                "Suggestions:",
-                options=rec_suggestions,
-                index=0,
-                key="rec_dynamic_suggestions",
-            )
+    # Fetch suggestions dynamically from API as user types
+    rec_suggestions = get_movie_suggestions(rec_query) if rec_query else []
+
+    # Show a dropdown of matching movies
+    selected_rec_movie = st.selectbox(
+        "Select from suggestions:",
+        rec_suggestions,
+        key="rec_dropdown"
+    ) if rec_suggestions else None
+
+    # Final movie to send to API
+    final_rec_movie = selected_rec_movie or rec_query
 
     if st.button("Get Recommendations"):
-        if not rec_query:
-            st.warning("Please select or type a movie name.")
+        if not final_rec_movie:
+            st.warning("Please enter or select a movie.")
         else:
             endpoint = build_url(
-                f"/recommend/{rec_query}",
+                f"/recommend/{final_rec_movie}",
                 genre=genre,
                 actor=actor,
                 tag=tag,
-                content_rating=rating,
+                content_rating=rating,  # now content_rating works here
                 filter_priority=priority,
             )
 
