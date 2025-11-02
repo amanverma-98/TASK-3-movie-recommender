@@ -7,7 +7,7 @@ import os
 import pandas as pd
 import re
 
-app = FastAPI(title="Movie Recommender API", version="5.0")
+app = FastAPI(title="Movie Recommender API", version="6.0")  # updated version
 
 BASE_DIR = os.path.dirname(__file__)
 
@@ -28,7 +28,6 @@ similarity = sparse.load_npz(os.path.join(BASE_DIR, "cos_sim_sparse.npz"))
 # genre , keywords , overview ko mila kr content rating k liye function bna rhe h
 def assign_content_rating(row):
     text = f"{row.get('genres', '')} {row.get('keywords', '')} {row.get('overview', '')}".lower()
-
     text = re.sub(r"[^a-z\s]", " ", text)  # special characters remove kr rhe h
 
     #Adult / 18+ content indicators
@@ -54,13 +53,12 @@ def assign_content_rating(row):
     else:
         return "U"
 
-
 # content rating ka column details me add kr rhe h
 details["content_rating"] = details.apply(assign_content_rating, axis=1)
 
 @app.get("/")
 def home():
-    return {"message": "🎬 Movie Recommender API with Filters and Smart Ratings is Running!"}
+    return {"message": "🎬 Movie Recommender API with Filters, Smart Ratings & Popularity Sorting is Running!"}
 
 
 #Search endpoint
@@ -86,7 +84,7 @@ def search_movies(
         matched_df = movies.iloc[matched_indices][["title"]] #matched titles ka dataframe bna rhe h
         enriched = pd.merge(     #matched titles ko details se merge kr rhe h
             matched_df,
-            details[["title", "genres", "overview", "top_3_actors", "keywords", "director", "content_rating"]],
+            details[["title", "genres", "overview", "top_3_actors", "keywords", "director", "content_rating", "popularity"]],
             on="title",
             how="left",
         )
@@ -114,6 +112,9 @@ def search_movies(
                 enriched = enriched[enriched["content_rating"].str.contains(val, case=False, na=False)]
 
         enriched = enriched.drop_duplicates(subset=["title"]) 
+
+        #Sort by popularity descending
+        enriched = enriched.sort_values(by="popularity", ascending=False)
 
         return {"results": enriched.to_dict(orient="records")}   # dict format me results return kr rhe h jisko json me convert kr skte h
 
@@ -145,7 +146,7 @@ def recommend(
     recommendations_df = movies.iloc[[i[0] for i in movies_list]][["title"]] 
     enriched = pd.merge(
         recommendations_df,
-        details[["title", "genres", "overview", "top_3_actors", "keywords", "director", "content_rating"]],
+        details[["title", "genres", "overview", "top_3_actors", "keywords", "director", "content_rating", "popularity"]],
         on="title",
         how="left",
     )
@@ -168,6 +169,9 @@ def recommend(
             enriched = enriched[enriched["content_rating"].str.contains(val, case=False, na=False)]
 
     enriched = enriched.drop_duplicates(subset=["title"])  #duplicate titles remove kr rhe h
+
+    #Sort recommendations by popularity descending
+    enriched = enriched.sort_values(by="popularity", ascending=False)
 
 # final response bna rhe h
     return {
