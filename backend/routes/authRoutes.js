@@ -9,8 +9,6 @@ authRouter.post("/register/Verify-OTP",userAuth,verifyOTP);
 authRouter.post("/register/Verify-account",userAuth,verifyEmail);
 authRouter.post("/login",login);
 authRouter.post("/logout",logout); 
-//authRouter.post("/Verify-OTP",userAuth,verifyOTP);
-//authRouter.post("/Verify-account",userAuth,verifyEmail);
 authRouter.post("/is-auth",userAuth,isAuthenticated);
 authRouter.post("/send-reset-otp",ResetPasswordOTP);
 authRouter.post("/reset-password",ResetPassword);

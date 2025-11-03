@@ -1,17 +1,3 @@
-// import nodemailer from "nodemailer";
-
-// const transporter = nodemailer.createTransport({
-//     host: "smtp.gmail.com",
-//     port: 465,
-//     secure: true,
-//     auth:{
-//         user: process.env.SENDER_EMAIL,
-//         pass: process.env.EMAIL_APP_PASSWORD
-//     }
-// })
-
-// export default transporter;
-
 import sgMail from '@sendgrid/mail';
 
 
@@ -25,7 +11,7 @@ const sendMail = async (mailOptions) => {
         from: process.env.SENDER_EMAIL, 
         subject: mailOptions.subject,
         text: mailOptions.text,
-
+        html: mailOptions.html,
     };
 
     try {

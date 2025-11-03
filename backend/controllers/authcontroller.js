@@ -36,7 +36,7 @@ export const register = async (req,res) => {
             from : process.env.SENDER_EMAIL,
             to : email,
             subject: "Welcome User",
-            text:`Welcome ${full_name}, your account has been created with E-Mail ID ${email}`
+            text:`Welcome to Roovie ${full_name}, your account has been created with E-Mail ID ${email}`
         }
         await transporter.sendMail(mailOptions);
 
@@ -128,7 +128,32 @@ export const verifyOTP = async (req,res) => {
             from : process.env.SENDER_EMAIL,
             to : email,
             subject: "Verification OTP",
-            text:`Your OTP is: ${otp}`
+            text:`Your OTP is: ${otp}`,
+            html:`<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your One-Time Password</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f7;">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+        <tr><td align="center" style="padding: 40px 20px;">
+                <h1 style="color: #333333; font-size: 24px; margin: 0 0 20px;">Your Verification Code</h1>
+                <p style="color: #666666; font-size: 16px; line-height: 1.5; margin: 0 0 30px;">
+                    Please use the following One-Time Password (OTP) to complete your action. This code is valid for 10 minutes.
+                </p>
+                <div style="background-color: #eef2ff; border: 2px dashed #a5b4fc; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+                    <p style="color: #312e81; font-size: 36px; font-weight: bold; letter-spacing: 5px; margin: 0; text-align: center;">
+                        ${otp}
+                    </p>
+                </div>
+                <p style="color: #888888; font-size: 14px; line-height: 1.5;">
+                    If you did not request this code, please ignore this email or contact support if you have any concerns.
+                </p></td></tr><tr>
+            <td align="center" style="padding: 20px; background-color: #f8f9fa; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                <p style="color: #999999; font-size: 12px; margin: 0;">
+                    &copy; 2025 Your Company Name. All rights reserved.</p></td></tr></table></body>
+                </html>`
         }
         await transporter.sendMail(mailOptions);
         return res.status(200).json({ success: true, message: "Verification OTP has been sent to your E-mail" });
@@ -139,6 +164,7 @@ export const verifyOTP = async (req,res) => {
 }
 
 export const verifyEmail = async (req,res) => {
+
     const userID = req.userId;
     const {otp} = req.body;
     if(!otp){
