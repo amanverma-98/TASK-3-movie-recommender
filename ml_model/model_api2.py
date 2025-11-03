@@ -115,7 +115,9 @@ def search_movies(
             elif key == "tag":
                 enriched = enriched[enriched["keywords"].str.contains(val, case=False, na=False)]
             elif key == "rating":
-                enriched = enriched[enriched["content_rating"].str.contains(val, case=False, na=False)]
+                pattern = re.escape(val)
+                enriched = enriched[enriched["content_rating"].str.contains(pattern, case=False, na=False)]
+
 
         enriched = enriched.drop_duplicates(subset=["title"])
 
@@ -174,7 +176,9 @@ def recommend(
         elif key == "tag":
             enriched = enriched[enriched["keywords"].str.contains(val, case=False, na=False)]
         elif key == "rating":
-            enriched = enriched[enriched["content_rating"].str.contains(val, case=False, na=False)]
+            pattern = re.escape(val)
+            enriched = enriched[enriched["content_rating"].str.contains(pattern, case=False, na=False)]
+
             
 
     enriched = enriched.drop_duplicates(subset=["title"])
