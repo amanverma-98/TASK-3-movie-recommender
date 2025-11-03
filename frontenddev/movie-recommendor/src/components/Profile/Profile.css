@@ -1,0 +1,117 @@
+
+.profile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: fadeIn 0.3s ease;
+}
+
+
+.profile-modal {
+  background: rgba(20, 20, 20, 0.95);
+  border-radius: 16px;
+  padding: 35px;
+  width: 380px;
+  color: white;
+  position: relative;
+  box-shadow: 0 0 25px rgba(79, 172, 254, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  animation: slideUp 0.3s ease;
+  text-align: center;
+}
+
+.profile-title {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+
+.profile-avatar {
+  font-size: 4rem;
+  margin-bottom: 15px;
+}
+
+.profile-field {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.profile-field label {
+  color: #4facfe;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.profile-field p {
+  color: #e6e6e6;
+  margin-top: 5px;
+  font-size: 1rem;
+}
+
+.logout-btn {
+  width: 100%;
+  background: linear-gradient(90deg, #4facfe, #9b4dff);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  box-shadow: 0 0 16px rgba(79, 172, 254, 0.8);
+  transform: scale(1.03);
+}
+
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: #4facfe;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #4facfe, #9b4dff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

@@ -1,0 +1,123 @@
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.modal-box {
+  width: 400px;
+  background: #111111;
+  border-radius: 12px;
+  padding: 40px;
+  position: relative;
+  color: white;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.modal-title {
+  text-align: center;
+  font-size: 1.8rem;
+  background: linear-gradient(90deg, #4facfe, #9b4dff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.modal-subtitle {
+  text-align: center;
+  color: #a0a0a0;
+  margin-bottom: 25px;
+  font-size: 0.95rem;
+}
+
+.modal-subtitle span {
+  background: linear-gradient(90deg, #4facfe, #9b4dff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 600;
+}
+
+/* Input and label styling */
+label {
+  display: block;
+  margin: 10px 0 5px;
+  color: #cfcfcf;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: white;
+  outline: none;
+  font-size: 0.95rem;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+input:focus {
+  border-color: #6c63ff;
+  box-shadow: 0 0 6px #6c63ff50;
+}
+
+/* Submit button */
+.modal-btn {
+  width: 100%;
+  margin-top: 25px;
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #4facfe, #9b4dff);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.3s, transform 0.2s;
+}
+.error-text {
+  width: 100%;
+  color: #ff6b6b; 
+  font-size: 0.9rem;
+  margin-top: 6px;
+  text-align: left;
+  padding-left: 4px;
+  font-weight: 500;
+}
+
+
+.modal-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Responsive layout */
+@media (max-width: 500px) {
+  .modal-box {
+    width: 90%;
+    padding: 30px;
+  }
+}
