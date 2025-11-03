@@ -13,7 +13,24 @@ connectDB();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({credentials:true}));
+
+const whitelist = [
+    'http://localhost:8000', 
+    'https://movie-recommender-ssom-4j0019viy-akshats-projects-18d1f938.vercel.app/' 
+];
+const corsOptions = {
+    
+    origin: function (origin, callback) {
+        
+        if (whitelist.indexOf(origin) !== -1 || !origin) {
+            callback(null, true); // Allow the request
+        } else {
+            callback(new Error('This origin is not allowed by CORS')); // Block the request
+        }
+    },
+    credentials: true 
+};
+app.use(cors(corsOptions));
 
 app.get("/", (req, res) => {
     res.status(200).json({ 
