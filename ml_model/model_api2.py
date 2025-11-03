@@ -14,7 +14,7 @@ BASE_DIR = os.path.dirname(__file__)
 # hmne CORS middleware add krdi hai jo frontend se requests allow krta hai
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://movie-recommender-ssom-4j0019viy-akshats-projects-18d1f938.vercel.app/"],
+    allow_origins=["https://movie-recommender-ssom-4j0019viy-akshats-projects-18d1f938.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
