@@ -33,21 +33,20 @@ def assign_content_rating(row):
     #Adult / 18+ content indicators
     adult_indicators = [
         "sex", "sexual", "nude", "nudity", "porn", "pornography", "strip", "erotic",
-        "intimate", "rape", "explicit", "adult", "violence", "blood", "murder",
-        "kill", "drugs", "drug use", "abuse", "affair", "lust"
+        "intimate", "rape", "explicit", "adult"
     ]
 
     #U/A content indicators
     ua_indicators = [
         "romance", "crime", "thriller", "horror", "fight", "dark", "intense", "war",
-        "fantasy", "supernatural", "revenge"
+        "fantasy", "supernatural", "revenge" , "kill", "drugs", "drug use", "abuse", "affair", "lust" ,"violence", "blood", "murder"
     ]
 
     adult_score = sum(1 for w in adult_indicators if re.search(rf"\b{w}\b", text))
     ua_score = sum(1 for w in ua_indicators if re.search(rf"\b{w}\b", text))
 
     if adult_score >= 1:
-        return "18+"
+        return "Mature"
     elif ua_score >= 1:
         return "U/A"
     else:

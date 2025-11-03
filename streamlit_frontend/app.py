@@ -16,7 +16,7 @@ st.sidebar.header("🎛️ Filters")
 genre = st.sidebar.text_input("Genre (e.g. Action, Comedy)")
 actor = st.sidebar.text_input("Actor Name")
 tag = st.sidebar.text_input("Tag or Keyword")
-rating = st.sidebar.selectbox("Content Rating", ["", "U", "U/A", "18+"])
+rating = st.sidebar.selectbox("Content Rating", ["", "U", "U/A", "Mature"])
 priority = st.sidebar.selectbox("Filter Priority", ["", "genre", "actor", "tag", "rating"])
 
 tab1, tab2 = st.tabs(["🎯 Search Movies", "🎥 Recommend Similar"])
