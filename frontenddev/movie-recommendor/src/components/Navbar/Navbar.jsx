@@ -19,7 +19,7 @@ const Navbar = ({ onLoginClick, onSignupClick, onProfileClick, onSearch }) => {
 
   // 🔍 Fetch movie suggestions when typing
   useEffect(() => {
-    if (query.length < 2) {
+    if (query.length < 1) {
       setSuggestions([]);
       return;
     }
@@ -76,13 +76,11 @@ const Navbar = ({ onLoginClick, onSignupClick, onProfileClick, onSearch }) => {
               <li
                 key={movie.id}
                 className="suggestion-item"
-                onClick={() => handleSearch(movie.title)}
-              >
+                onClick={() => handleSearch(movie.title)}>
                 {movie.poster_path && (
                   <img
                     src={`https://image.tmdb.org/t/p/w45${movie.poster_path}`}
-                    alt={movie.title}
-                  />
+                    alt={movie.title}/>
                 )}
                 <span>{movie.title}</span>
               </li>
