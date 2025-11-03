@@ -37,11 +37,10 @@ const Navbar = ({ onLoginClick, onSignupClick, onProfileClick, onSearch }) => {
       }
     };
 
-    const delay = setTimeout(fetchSuggestions, 400); // debounce typing
+    const delay = setTimeout(fetchSuggestions, 400); 
     return () => clearTimeout(delay);
   }, [query]);
 
-  // ✅ Handle selecting a movie or pressing Enter
   const handleSearch = (movieTitle = query) => {
     if (!movieTitle.trim()) return;
     onSearch(movieTitle);
@@ -70,7 +69,7 @@ const Navbar = ({ onLoginClick, onSignupClick, onProfileClick, onSearch }) => {
           </button>
         </div>
 
-        {/* 🔽 Dropdown */}
+        
         {showDropdown && suggestions.length > 0 && (
           <ul className="suggestions-dropdown">
             {suggestions.map((movie) => (
