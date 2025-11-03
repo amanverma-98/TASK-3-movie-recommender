@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 
-# ---------------- CONFIG ----------------
+# CONFIG VARIABLES
 BASE_URL = "https://movie-recommender-api-pe1p.onrender.com"
 TMDB_API_KEY = "85d56c54dccf4330ed1c3f13472694ed"
 TMDB_BASE_URL = "https://api.themoviedb.org/3/search/movie"
@@ -11,7 +11,7 @@ st.set_page_config(page_title="🎬 Movie Recommender", page_icon="🎥", layout
 st.title("🎬 Movie Recommender System")
 st.markdown("Find and explore movies with AI-powered filters, posters & recommendations!")
 
-# ---------------- SIDEBAR FILTERS ----------------
+# SIDEBAR FILTERS 
 st.sidebar.header("🎛️ Filters")
 genre = st.sidebar.text_input("Genre (e.g. Action, Comedy)")
 actor = st.sidebar.text_input("Actor Name")
@@ -21,8 +21,8 @@ priority = st.sidebar.selectbox("Filter Priority", ["", "genre", "actor", "tag",
 
 tab1, tab2 = st.tabs(["🎯 Search Movies", "🎥 Recommend Similar"])
 
-# ---------------- FUNCTIONS ----------------
-@st.cache_data(ttl=300)
+# FUNCTIONS
+@st.cache_data(ttl=300)  
 def call_api(endpoint):
     """Call FastAPI backend"""
     try:
@@ -73,7 +73,7 @@ def build_url(base, **params):
     return f"{base}?{query_str}" if query_str else base
 
 
-# ---------------- SEARCH TAB (Dynamic Search Input) ----------------
+# SEARCH TAB (Dynamic Search Input)
 with tab1:
     st.subheader("🔍 Search Movies")
 
@@ -132,7 +132,7 @@ with tab1:
                         st.divider()
 
 
-# ---------------- RECOMMEND TAB (Dynamic Search Input) ----------------
+# RECOMMEND TAB (Dynamic Search Input)
 with tab2:
     st.subheader("🎞️ Recommend Similar Movies")
 

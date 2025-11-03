@@ -106,13 +106,13 @@ def search_movies(
         if filter_priority and filter_priority in filters:
             filters = {filter_priority: filters.pop(filter_priority), **filters}
 
-        for key, val in filters.items():
+        for key, val in filters.items():    # filters ko ek ek krke apply kr rhe h
             if key == "genre":
                 enriched = enriched[enriched["genres"].str.contains(val, case=False, na=False)]
             elif key == "actor":
                 enriched = enriched[enriched["top_3_actors"].str.contains(val, case=False, na=False)]
             elif key == "tag":
-                enriched = enriched[enriched["keywords"].str.contains(val, case=False, na=False)]
+                enriched = enriched[enriched["keywords"].str.contains(val, case=False, na=False)]   # keywords m jake val ko match krke filter kr rhe h
             elif key == "rating":
                 pattern = re.escape(val)
                 enriched = enriched[enriched["content_rating"].str.contains(pattern, case=False, na=False)]
@@ -142,54 +142,54 @@ def recommend(
     content_rating: str | None = Query(None),
     filter_priority: str | None = Query(None)
 ):
-    movie_name = movie_name.strip().lower()
-    all_titles = movies["title"].str.lower().tolist()
-    best_match, score = process.extractOne(movie_name, all_titles)
+    movie_name = movie_name.strip().lower()   # input movie name ko lowercase me kr rhe h
+    all_titles = movies["title"].str.lower().tolist()  # sabhi movie titles ko lowercase me kr rhe h , list me convert kr rhe h kyuki fuzzywuzzy ko list chahiye hoti h
+    best_match, score = process.extractOne(movie_name, all_titles) #fuzzywuzzy ka extractOne use kr rhe h best match aur score ke liye
 
     if score < 60:
         raise HTTPException(status_code=404, detail=f"No close match found for '{movie_name}'")
 
-    index = movies[movies["title"].str.lower() == best_match].index[0]
-    distances = list(enumerate(similarity[index].toarray().flatten()))
-    movies_list = sorted(distances, reverse=True, key=lambda x: x[1])[1:6]
+    index = movies[movies["title"].str.lower() == best_match].index[0]   # original index find kr rhe h movies dataframe me
+    distances = list(enumerate(similarity[index].toarray().flatten()))   #similarity scores nikal rhe h us movie k liye , enumerate isliye kr rhe h taki index loose na ho
+    movies_list = sorted(distances, reverse=True, key=lambda x: x[1])[1:6]   # top 5 similar movies ko sort kr rhe h similarity score k hisab se , [1:6] isliye kr rhe h taki khud ki movie na aaye
 
-    recommendations_df = movies.iloc[[i[0] for i in movies_list]][["title"]]
-    enriched = pd.merge(
+    recommendations_df = movies.iloc[[i[0] for i in movies_list]][["title"]]    # recommended movies ke titles nikal rhe h
+    enriched = pd.merge(                                                         # recommended movies ko details dataframe se merge kr rhe h taki extra info mil jaye
         recommendations_df,
         details[["title", "genres", "overview", "top_3_actors", "keywords", "director", "content_rating", "popularity"]],
         on="title",
-        how="left",
+        how="left", 
     )
 
-    filters = {"genre": genre, "actor": actor, "tag": tag, "rating": content_rating}
-    filters = {k: v for k, v in filters.items() if v}
+    filters = {"genre": genre, "actor": actor, "tag": tag, "rating": content_rating} # filters ko dictionary me store kr rhe h
+    filters = {k: v for k, v in filters.items() if v}                      # sirf wahi filters rakh rhe h jinki value di gayi ho
 
-    if filter_priority and filter_priority in filters:
-        filters = {filter_priority: filters.pop(filter_priority), **filters}
+    if filter_priority and filter_priority in filters:  # priority k hisab se filters apply kr rhe h
+        filters = {filter_priority: filters.pop(filter_priority), **filters}   # dictionary me priority wale filter ko pehle rakh rhe h uski value nikal kr
 
-    for key, val in filters.items():
-        if key == "genre":
-            enriched = enriched[enriched["genres"].str.contains(val, case=False, na=False)]
+    for key, val in filters.items():          # filters ko ek ek krke apply kr rhe h
+        if key == "genre":                    
+            enriched = enriched[enriched["genres"].str.contains(val, case=False, na=False)]   # genres m jake val ko match krke filter kr rhe h
         elif key == "actor":
-            enriched = enriched[enriched["top_3_actors"].str.contains(val, case=False, na=False)]
+            enriched = enriched[enriched["top_3_actors"].str.contains(val, case=False, na=False)]  
         elif key == "tag":
             enriched = enriched[enriched["keywords"].str.contains(val, case=False, na=False)]
         elif key == "rating":
-            pattern = re.escape(val)
+            pattern = re.escape(val)  # special characters ko escape kr rhe h
             enriched = enriched[enriched["content_rating"].str.contains(pattern, case=False, na=False)]
 
             
 
-    enriched = enriched.drop_duplicates(subset=["title"])
+    enriched = enriched.drop_duplicates(subset=["title"])  # duplicate titles ko hata rhe h
 
     # limit top 3 actors
-    enriched["top_3_actors"] = enriched["top_3_actors"].apply(keep_top_3_actors)
+    enriched["top_3_actors"] = enriched["top_3_actors"].apply(keep_top_3_actors) 
 
     #Sort recommendations by popularity descending
     enriched = enriched.sort_values(by="popularity", ascending=False)
 
     return {
-        "searched_movie": movies.loc[index, "title"],
+        "searched_movie": movies.loc[index, "title"],   # movies.loc ka use hm kr rhe h specific index se title nikalne k liye
         "match_score": score,
-        "recommendations": enriched.to_dict(orient="records"),
+        "recommendations": enriched.to_dict(orient="records"),       # recommended movies ko dictionary me convert krke usse info show kr rhe h
     }
