@@ -15,7 +15,7 @@
 }
 
 .logo {
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 700;
   letter-spacing: 1.2px;
   cursor: pointer;
@@ -186,3 +186,46 @@ input:focus,
     margin-top: 10px;
   }
 }
+
+.search-wrapper {
+  position: relative;
+  width: 350px;
+}
+
+
+.suggestions-dropdown {
+  position: absolute;
+  top: 52px;
+  left: 52px;
+  width: 100%;
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  z-index: 9999; 
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.suggestion-item:hover {
+  background: rgba(79, 172, 254, 0.25);
+}
+
+.suggestion-item img {
+  width: 35px;
+  height: 50px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+
