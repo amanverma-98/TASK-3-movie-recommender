@@ -22,8 +22,8 @@ This project delivers personalized and filtered movie suggestions using modern w
 │ ├── config/
 │ └── server.js
 │
-├── ml_model 
-│ ├── model.ipynb
+├── ml_model/ # ML Model
+│ ├── model.py
 │ ├── cos_sim_sparse.npz
 │ ├── movies_df.joblib
 │ ├── movies_info.csv
