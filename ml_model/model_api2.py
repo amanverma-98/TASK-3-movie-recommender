@@ -55,7 +55,7 @@ def assign_content_rating(row):
 
 # content rating ka column details me add kr rhe h
 details["content_rating"] = details.apply(assign_content_rating, axis=1)
-
+print(details["content_rating"].unique())
 # helper function to keep only top 3 actors
 def keep_top_3_actors(x):
     actors = str(x).split(",")  # split by comma
@@ -174,9 +174,8 @@ def recommend(
         elif key == "tag":
             enriched = enriched[enriched["keywords"].str.contains(val, case=False, na=False)]
         elif key == "rating":
-            enriched = enriched[enriched["content_rating"].str.strip().eq(val)]
- 
-
+            enriched = enriched[enriched["content_rating"].str.contains(val, case=False, na=False)]
+            
 
     enriched = enriched.drop_duplicates(subset=["title"])
 
