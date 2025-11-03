@@ -6,7 +6,7 @@ const Hero = ({ movie }) => {
 
   useEffect(() => {
     if (movie) {
-      // Trigger fade animation whenever the movie changes
+      
       setFade(true);
       const timer = setTimeout(() => setFade(false), 800); // 0.8s fade
       return () => clearTimeout(timer);

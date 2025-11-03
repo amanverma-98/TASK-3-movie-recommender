@@ -15,7 +15,7 @@ const TopRated = () => {
 
   return (
     <div className="top-rated-page">
-      <h1 className="section-title">⭐ Top Rated Movies</h1>
+   
       <MovieGrid title="⭐ Top Rated" movies={movies} />
     </div>
   );

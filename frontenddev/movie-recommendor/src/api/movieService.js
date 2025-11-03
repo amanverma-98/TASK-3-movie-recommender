@@ -9,9 +9,7 @@ const TMDB_HEADERS = {
   Accept: "application/json",
 };
 
-/**
- * 1️⃣ Fetch recommended movies from your ML backend (correct endpoint + field)
- */
+
 export const fetchRecommendedMovies = async (title = "The Avengers") => {
   try {
     const endpoint = `${ML_API_BASE_URL}/recommend/${encodeURIComponent(title)}`;

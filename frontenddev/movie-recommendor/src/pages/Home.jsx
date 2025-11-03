@@ -17,7 +17,8 @@ const Home = ({ recommendedMovies, loading }) => {
     <div className="home-page">
       <MovieGrid title="⭐ Top Rated Movies" movies={topRated} />
 
-      {!loading && recommendedMovies.length > 0 && (
+      {/* ✅ Show Recommended only when not loading and there are movies */}
+      {!loading && recommendedMovies && recommendedMovies.length > 0 && (
         <MovieGrid title="🎯 Recommended" movies={recommendedMovies} />
       )}
     </div>
