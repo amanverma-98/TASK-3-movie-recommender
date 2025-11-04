@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin:"https://movie-recommender-ssom-4j0019viy-akshats-projects-18d1f938.vercel.app",
+    origin:"https://movie-recommender-ssom.vercel.app",
     credentials:true
 }));
 
