@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin:"https://movie-recommender-ssom.vercel.app",
+    origin:["https://movie-recommender-ssom.vercel.app","http://localhost:8000"],
     credentials:true
 }));
 
