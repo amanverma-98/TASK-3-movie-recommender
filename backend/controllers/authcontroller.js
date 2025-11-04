@@ -69,9 +69,6 @@ export const login = async (req,res) => {
     if (!email||!password){
         return res.json({success:false,message: "Both E-mail and password are required"})
     }
-    if(!userModel.isVerified){
-        return res.json({success:false, message:"User not verified"})
-    }
     try{
         const user = await userModel.findOne({email});
         if(!user){
