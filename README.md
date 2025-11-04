@@ -7,7 +7,7 @@ This project delivers personalized and filtered movie suggestions using modern w
 ---
 
 ## 🏗️ Project Structure  
-
+```
 📁 Movie-Recommender/
 │
 ├── frontend/ # Frontend Web App (React / JS)
@@ -31,7 +31,7 @@ This project delivers personalized and filtered movie suggestions using modern w
 │
 └── backup-streamlit/ # Optional Streamlit Interface (backup UI)
 └── streamlit_app.py
-
+```
 
 ---
 
