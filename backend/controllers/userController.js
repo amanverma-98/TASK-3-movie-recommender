@@ -10,7 +10,7 @@ export const userData = async (req,res) => {
         return res.json({
             success:true,
             user:{
-                name:user.full_name,
+                full_name:user.full_name,
                 email: user.email,
                 isVerified:user.isVerified,
                 createdAt: user.createdAt
