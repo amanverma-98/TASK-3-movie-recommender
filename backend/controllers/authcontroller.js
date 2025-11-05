@@ -3,6 +3,9 @@ import jwt from "jsonwebtoken";
 import userModel from "../models/user.model.js"
 import transporter from "../config/nodemailer.js";
 import validator from "validator";
+import sgMail from '@sendgrid/mail';
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 export const register = async (req,res) => {
     const {full_name,email,password} = req.body;
@@ -14,13 +17,15 @@ export const register = async (req,res) => {
     if (password.length < 8 || password.length >50) {
         return res.status(400).json({ success: false, message: "Password does not meet the strength requirements." });
     }
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
-    const complexityScore = hasUpperCase + hasLowerCase + hasNumber + hasSymbol;
-    if (complexityScore < 3) {
-        return res.status(400).json({ success: false, message: "Password does not meet the strength requirements." });
+    if (!validator.isStrongPassword(password, {
+    minLength: 8,
+    minLowercase: 1,
+    minUppercase: 1,
+    minNumbers: 1,
+    minSymbols: 1
+    }))
+    {return res.json({success: false,
+        message: "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"});
     }
     try{
         const ExistingUser = await userModel.findOne({email});
@@ -32,13 +37,14 @@ export const register = async (req,res) => {
         await user.save();
         const token = jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:"7d"});
 
-        const mailOptions = {
+        const msg = {
             from : process.env.SENDER_EMAIL,
             to : email,
             subject: "Welcome User",
             text:`Welcome to Roovie ${full_name}, your account has been created with E-Mail ID ${email}`
         }
-        await transporter.sendMail(mailOptions);
+        await sgMail.send(msg);
+        console.log('Welcome email sent successfully via SendGrid.');
 
         res.cookie("token",token,{
             httpOnly:true,
@@ -119,7 +125,7 @@ export const verifyOTP = async (req,res) => {
         user.verifyOTP = otp;
         user.verifyOTPExpiredAt = Date.now() + 10*60*1000;
         await user.save();
-        const mailOptions = {
+        const msg = {
             from : process.env.SENDER_EMAIL,
             to : email,
             subject: "Verification OTP",
@@ -147,11 +153,12 @@ export const verifyOTP = async (req,res) => {
                 </p></td></tr><tr>
             <td align="center" style="padding: 20px; background-color: #f8f9fa; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
                 <p style="color: #999999; font-size: 12px; margin: 0;">
-                    &copy; 2025 Your Company Name. All rights reserved.</p></td></tr></table></body>
+                    &copy; 2025 Roovie. All rights reserved.</p></td></tr></table></body>
                 </html>`
         }
-        await transporter.sendMail(mailOptions);
-        return res.status(200).json({ success: true, message: "Verification OTP has been sent to your E-mail" });
+        await sgMail.send(msg);
+        console.log('Verification email sent successfully via SendGrid.');
+        return res.json({success:true,message:"Verification OTP has been sent to your E-mail"})
     }
     catch(error){
         return res.json({success:false, message: error.message});
@@ -210,13 +217,39 @@ export const ResetPasswordOTP = async (req,res) => {
         user.resetOTP = otp;
         user.resetOTPExpiredAt = Date.now() + 10*60*1000;
         await user.save();
-        const mailOptions = {
+        const msg = {
             from : process.env.SENDER_EMAIL,
             to : email,
             subject: "Password Reset OTP",
-            text:`Your OTP for resetting your password is: ${otp}`
+            text:`Your OTP for resetting your password is: ${otp}`,
+            html:`<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your One-Time Password</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f7;">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+        <tr><td align="center" style="padding: 40px 20px;">
+                <h1 style="color: #333333; font-size: 24px; margin: 0 0 20px;">Your Verification Code</h1>
+                <p style="color: #666666; font-size: 16px; line-height: 1.5; margin: 0 0 30px;">
+                    Please use the following One-Time Password (OTP) to complete your action. This code is valid for 10 minutes.
+                </p>
+                <div style="background-color: #eef2ff; border: 2px dashed #a5b4fc; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+                    <p style="color: #312e81; font-size: 36px; font-weight: bold; letter-spacing: 5px; margin: 0; text-align: center;">
+                        ${otp}
+                    </p>
+                </div>
+                <p style="color: #888888; font-size: 14px; line-height: 1.5;">
+                    If you did not request this code, please ignore this email or contact support if you have any concerns.
+                </p></td></tr><tr>
+            <td align="center" style="padding: 20px; background-color: #f8f9fa; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                <p style="color: #999999; font-size: 12px; margin: 0;">
+                    &copy; 2025 Roovie. All rights reserved.</p></td></tr></table></body>
+                </html>`
         }
-        await transporter.sendMail(mailOptions);
+        await sgMail.send(msg);
+        console.log('Verification email sent successfully via SendGrid.');
         return res.status(200).json({ success: true, message: "OTP has been sent to your E-mail" });
 
     } catch (error) {
