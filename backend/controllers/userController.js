@@ -11,7 +11,9 @@ export const userData = async (req,res) => {
             success:true,
             userData:{
                 name:user.full_name,
-                isVerified:user.isVerified
+                email: user.email,
+                isVerified:user.isVerified,
+                createdAt: user.createdAt
             }
         })
     } catch (error) {
