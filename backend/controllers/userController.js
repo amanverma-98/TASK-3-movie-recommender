@@ -9,7 +9,7 @@ export const userData = async (req,res) => {
         }
         return res.json({
             success:true,
-            userData:{
+            user:{
                 name:user.full_name,
                 email: user.email,
                 isVerified:user.isVerified,
