@@ -3,6 +3,9 @@
 An **AI-powered Movie Recommendation System** featuring a **dedicated Frontend**, a **complete Backend** (Login/Signup + Profile management), and an **independent ML API** built using **FastAPI** for intelligent movie recommendations.  
 
 This project delivers personalized and filtered movie suggestions using modern web technologies, modular microservices, and content-aware filtering (U, U/A, 18+).  
+Project link - https://movie-recommender-ssom.vercel.app/
+Streamlit link - https://movie-recommender-ml-app.streamlit.app/
+ML API link - https://movie-recommender-api-pe1p.onrender.com/
 
 ---
 
